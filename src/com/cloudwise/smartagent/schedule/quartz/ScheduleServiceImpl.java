@@ -6,6 +6,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -14,15 +15,17 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 
-import com.cloudwise.smartagent.schedule.CronTag;
 import com.cloudwise.smartagent.schedule.IScheduleEvent;
-import com.cloudwise.smartagent.schedule.ScheduleService;
+import com.cloudwise.smartagent.schedule.IScheduleService;
+import com.cloudwise.smartagent.schedule.quartz.utils.CronTag;
 
-public class ScheduleServiceImpl implements ScheduleService {
+public class ScheduleServiceImpl implements IScheduleService {
+	private Logger logger = Logger.getLogger(getClass());
+
 	private Scheduler scheduler;
 
-	public ScheduleServiceImpl() {
-		scheduler = ScheduleServiceFactoryImpl.getScheduler();
+	public ScheduleServiceImpl(Scheduler scheduler) {
+		this.scheduler = scheduler;
 	}
 
 	@Override
@@ -30,7 +33,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		try {
 			return scheduler.checkExists(new JobKey(scheduleId));
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			logger.error("invoke the schedule service method[exist(id)]  error.", e);
 		}
 		return false;
 	}
@@ -57,9 +60,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 		try {
 			scheduler.scheduleJob(taskJobImpl, taskTrigger);
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			logger.error("invoke the schedule service method[addSchedule]  error.", e);
 		}
 	}
+
 	@Override
 	public void updateSchedule(String scheduleId, String name, String cronExp,
 			IScheduleEvent event, Map param) {
@@ -81,7 +85,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 				scheduler.scheduleJob(jd, trg);
 			}
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			logger.error("invoke the schedule service method[updateSchedule]  error.", e);
 		}
 
 	}
@@ -95,7 +99,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 				scheduler.deleteJob(new JobKey(scheduleId));
 			}
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			logger.error("invoke the schedule service method[deleteSchedule]  error.", e);
 		}
 
 	}
@@ -107,7 +111,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 			try {
 				scheduler.triggerJob(new JobKey(scheduleId));
 			} catch (SchedulerException e) {
-				e.printStackTrace();
+				logger.error("invoke the schedule service method[runNow]  error.", e);
 			}
 		} else {
 			JobDataMap dataBean = new JobDataMap();
@@ -124,7 +128,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 			try {
 				scheduler.scheduleJob(taskJobImpl, taskTrigger);
 			} catch (SchedulerException e) {
-				e.printStackTrace();
+				logger.error("invoke the schedule service method[runNow]  error.", e);
 			}
 		}
 	}
