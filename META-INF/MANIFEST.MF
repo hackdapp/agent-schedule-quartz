@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: quartz
+Bundle-SymbolicName: com.cloudwise.smartagent.schedule.quartz
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: agent_schedule_quartz.Activator
+Import-Package: com.cloudwise.smartagent.schedule
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: lib/log4j-1.2.16.jar,
+ lib/quartz-2.1.6.jar,
+ lib/slf4j-api-1.6.1.jar,
+ lib/slf4j-jdk14-1.6.1.jar,
+ .
